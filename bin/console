@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+define('BASE_PATH', dirname(__DIR__));
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+/** @var \OffeneVergaben\Console\Application $app */
+$app = \OffeneVergaben\Console\Application::getInstance();
+
+//$app->addCommand(new \OffeneVergaben\Console\Commands\HelloWorldCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\GetPublishersCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\ScrapeKerndatenCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\ScrapeAllCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\DownloadCommand());
+
+$app->addCommand(new \OffeneVergaben\Console\Commands\DisablePublisherCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\EnablePublisherCommand());
+$app->addCommand(new \OffeneVergaben\Console\Commands\ListPublishersCommand());
+
+$app->run();
