@@ -188,7 +188,7 @@ class GetPublishersCommand extends AbstractCommand
 
     protected function insertQuelle($package, $resource, $active) {
         $data = [
-            'alias' => substr(Str::slug($package->publisher, '', 'de'),0,50),
+            'alias' => substr(Str::slug($package->publisher, '', 'de'),0,20),
             'reference_id' => $package->id,
             'active' => $active ? 1 : 0,
             'name' => trim($package->publisher),

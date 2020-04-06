@@ -4,7 +4,7 @@ CREATE DATABASE `vergaben_scraper` DEFAULT CHARACTER SET `utf8mb4`;
 # create quellen table
 CREATE TABLE `vergaben_scraper`.`quellen` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `alias` varchar(50) NOT NULL,
+  `alias` varchar(20) NOT NULL,
   `reference_id` varchar(72) DEFAULT NULL COMMENT 'Eindeutiger Identifkator des Metadatensatzes auf data.gv.at',
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `vergaben_scraper`.`quellen` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `alias` (`alias`),
   UNIQUE KEY `reference_id` (`reference_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # create kerndaten table
 CREATE TABLE `vergaben_scraper`.`kerndaten` (
@@ -29,4 +29,4 @@ CREATE TABLE `vergaben_scraper`.`kerndaten` (
   PRIMARY KEY (`id`),
   KEY `kerndaten_quelle_foreign` (`quelle`),
   CONSTRAINT `kerndaten_quelle_foreign` FOREIGN KEY (`quelle`) REFERENCES `quellen` (`alias`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
