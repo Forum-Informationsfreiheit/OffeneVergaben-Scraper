@@ -187,8 +187,16 @@ class GetPublishersCommand extends AbstractCommand
     }
 
     protected function insertQuelle($package, $resource, $active) {
+
+        $alias = substr(Str::slug($package->publisher, '', 'de'),0,20);
+
+        // alias is a unique key, check against db for existence
+        if ($this->findQuelleByAlias($alias)) {
+            $alias = $this->getNewChainedAlias($alias);
+        }
+
         $data = [
-            'alias' => substr(Str::slug($package->publisher, '', 'de'),0,20),
+            'alias' => $alias,
             'reference_id' => $package->id,
             'active' => $active ? 1 : 0,
             'name' => trim($package->publisher),
@@ -225,5 +233,55 @@ class GetPublishersCommand extends AbstractCommand
             [$id]);
 
         return count($result) ? $result[0] : null;
+    }
+
+    /**
+     * @return array
+     */
+    protected function findQuelleByAlias($alias) {
+        $result = $this->db->get(
+            "SELECT * FROM quellen WHERE alias= ? LIMIT 1",
+            [$alias]);
+
+        return count($result) ? $result[0] : null;
+    }
+
+    /**
+     * In case multiple publishers exist on data.gv.at with the same name
+     * (or at least based on the first 20 relevant characters),
+     * add a numeric suffix.
+     *
+     * @param $alias
+     *
+     * @return string
+     */
+    protected function getNewChainedAlias($alias) {
+        $base = $alias;
+
+        // Why 17? Need 17+18+19+20 for the numeric suffix e.g. '_001'
+        // DB Column alias has a limit of 20 chars need to add 1 separation char and 3 chars for the number
+        if (strlen($alias) >= 17) {
+            $base = substr($alias, 0, 16);
+        }
+
+        $index = 1;
+        $numericAlias = null;
+
+        // this logic will fail if the numeric range of 1-999 is exceeded
+        // ... but that should not happen
+        while(true) {
+            $suffix = str_pad((string)$index, 3, "0", STR_PAD_LEFT);
+            $numericAlias = $base . '_' . $suffix;
+
+            if ($this->findQuelleByAlias($numericAlias)) {
+                $index++;
+                continue;
+            }
+
+            // found one that doesn't exist yet, yey
+            break;
+        }
+
+        return $numericAlias;
     }
 }
