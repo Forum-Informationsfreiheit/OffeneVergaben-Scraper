@@ -45,7 +45,7 @@ Inside the project directory run `bin/console` to run the command line tool in `
 
 Run `bin/console <command>` to run a specific command.
 
-### Available commands
+### Primary commands
 
 [``scrape:all``](#command-scrape-all)
 
@@ -55,19 +55,33 @@ Run `bin/console <command>` to run a specific command.
 
 [``download``](#command-download)
 
+#### Additional Commands
+
+[``list:publishers``](#command-list-publishers)
+
+[``enable:publisher``](#command-enable-publisher)
+
+[``disable:publisher``](#command-disable-publisher)
+
 #### Command Scrape All
+
+`scrape:all`
 
 A "meta" command that executes `scrape:publishers` and `scrape:kerndaten` consecutively. If you intend to run the scraper periodically this is the command to plug into your `crontab`.
 
 #### Command Scrape Publishers
 
+`scrape:publishers`
+
 Scrapes a list of data publishers from data.gv.at . Makes use of its *CKAN API*. The main goal of this command is to retrieve all the urls of all available *Kerndaten*-sources.
 
-Automatically runs a check to test if the provided url is a valid *Kerndaten*-source. In case the test fails the publisher will be marked as inactive in the database and will be ignored during the actual *Kerndaten* scraping process.
+Automatically runs a check to test if the provided url is a valid *Kerndaten*-source. In case the test fails the publisher will be marked as disabled in the database and will be ignored during the actual *Kerndaten* scraping process.
 
 Please note if you don't use `scrape:all` this command is required to run before `scrape:kerndaten`.
 
 #### Command Scrape Kerndaten
+
+`scrape:kerndaten`
 
 This command scrapes the actual *Kerndaten* (Tender procedures) by a two step process.
 
@@ -81,9 +95,9 @@ By default the scraper waits 1.5 seconds between each request. This translates t
 
 The scraping process can be stopped at any time with `CTRL^C`. On the next call the scraper will resume seamlessly without loss of data.
 
-
-
 #### Command Download
+
+`download`
 
 The "quick & dirty" way to get the data. Executes a complete download (not version aware!) of all available *Kerndaten* xmls at the given time.
 
@@ -92,6 +106,25 @@ By default the data will be downloaded into a timestamped directory inside the `
 Database setup is not required for this command to work.
 
 
+#### Command List Publishers
+
+`list:publishers`
+
+Print a list of all known publishers that are stored in the connected database to the console and show information about the date it was added, the current status (enabled / disabled) and the key (the reference id from data.gv.at).
+
+Use the `--check` option to perform a live check to find out if the data source is actually up and responding with xml content, this takes a moment or two, depending on the number of requests that have to be performed and the response time of each request.
+
+#### Command Enable Publisher
+
+`enable:publisher <reference_id of publisher>`
+
+Use this command to (re-)enable a previously disabled publisher. Only publishers that are enabled will be considered for scraping.
+
+#### Command Disable Publisher
+
+`disable:publisher <reference_id of publisher>`
+
+Use this command to disable a publisher. Disabled publishers are simply ignored during scraping.
 
 ## License
 
