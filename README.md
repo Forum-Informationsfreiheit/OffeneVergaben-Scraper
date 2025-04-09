@@ -126,6 +126,24 @@ Use this command to (re-)enable a previously disabled publisher. Only publishers
 
 Use this command to disable a publisher. Disabled publishers are simply ignored during scraping.
 
+#### Running with Docker
+
+ Build local docker image:
+
+`docker build -t offenevergaben-scraper-app .`
+
+Run `download`:
+
+`docker run -it --rm -v ./downloads:/app/downloads offenevergaben-scraper-app bin/console download`
+
+Alternatively, to `scrape:all` and save all results to a local database, you can use Docker Compose. 
+The included `compose.yml` sets up a mariadb server.
+
+```sh
+docker compose up -d
+docker exec -it offenevergaben-app-1 bin/console scrape:all
+```
+
 ## License
 
 you may find the license for the source code in the `LICENSE` file.

@@ -1,0 +1,23 @@
+name: offenevergaben
+services:
+  app:
+    build: 
+       context: .
+       dockerfile: Dockerfile
+    image: "offenevergaben-scraper-app"
+    depends_on:
+      - db
+    env_file: .env
+    working_dir: /app
+    volumes:
+      - "./downloads:/app/downloads"
+
+  db:
+    image: mariadb
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    volumes:
+      - "./db-data:/var/lib/mysql"
+      - "./sql:/docker-entrypoint-initdb.d/:ro"

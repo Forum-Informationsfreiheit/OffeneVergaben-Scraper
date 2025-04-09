@@ -4,3 +4,4 @@
 /vendor
 /logs
 /downloads
+/db-data*
