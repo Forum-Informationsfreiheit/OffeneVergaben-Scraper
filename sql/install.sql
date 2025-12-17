@@ -21,12 +21,13 @@ CREATE TABLE `vergaben_scraper`.`kerndaten` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `quelle` varchar(20) NOT NULL,
   `version` int(11) NOT NULL DEFAULT '1',
-  `item_id` varchar(72) DEFAULT NULL,
+  `item_id` varchar(80) DEFAULT NULL,
   `item_url` varchar(500) DEFAULT NULL,
   `item_lastmod` timestamp(6) NULL DEFAULT NULL,
   `xml` text NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `kerndaten_quelle_item_id` (`quelle`,`item_id`),
   KEY `kerndaten_quelle_foreign` (`quelle`),
   CONSTRAINT `kerndaten_quelle_foreign` FOREIGN KEY (`quelle`) REFERENCES `quellen` (`alias`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
