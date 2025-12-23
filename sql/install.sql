@@ -1,5 +1,5 @@
 # create database
-CREATE DATABASE `vergaben_scraper` DEFAULT CHARACTER SET `utf8mb4`;
+CREATE DATABASE IF NOT EXISTS  `vergaben_scraper` DEFAULT CHARACTER SET `utf8mb4`;
 
 # create quellen table
 CREATE TABLE `vergaben_scraper`.`quellen` (
