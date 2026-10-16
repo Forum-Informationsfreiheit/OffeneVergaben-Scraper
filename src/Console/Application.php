@@ -31,7 +31,17 @@ class Application
         $env->load();
         $this->env = $env;
 
-        // add logger
+        // error reporting to Sentry / Bugsink, only if a DSN is configured
+        if (getenv('SENTRY_DSN')) {
+            \Sentry\init([
+                'dsn' => getenv('SENTRY_DSN'),
+                'environment' => getenv('SENTRY_ENVIRONMENT') ?: null,
+                'release' => getenv('SENTRY_RELEASE') ?: null,
+                'send_default_pii' => false,
+            ]);
+        }
+
+        // add logger (errors are forwarded to Sentry if initialized above)
         $this->logger = new Logger();
 
         // add database
