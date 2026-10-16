@@ -72,9 +72,13 @@ class ListPublishersCommand extends AbstractCommand
             $row = [
                 ++$i,
                 text_shorten($p['name'],30),
+                $p['alias'],
                 $p['reference_id'],
                 Carbon::createFromTimeString($p['created_at'])->format('d.m.Y'),
-                $p['active'] ? 'enabled' : '<comment>disabled</comment>'
+                $p['active'] ? 'enabled' : '<comment>disabled</comment>',
+                preg_match('/_\d{3}$/', $p['alias'])
+                    ? '<comment>possible duplicate</comment>'
+                    : ''
             ];
 
             if ($this->input->getOption('check')) {
@@ -94,9 +98,11 @@ class ListPublishersCommand extends AbstractCommand
         $headers = [
             '#',
             'name',
+            'alias',
             'data.gv.at reference_id',
             'added',
-            'status'
+            'status',
+            'warning'
         ];
 
         if ($this->input->getOption('check')) {
