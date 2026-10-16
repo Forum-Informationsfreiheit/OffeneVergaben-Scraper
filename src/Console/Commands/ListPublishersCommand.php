@@ -23,7 +23,7 @@ class ListPublishersCommand extends AbstractCommand
 
     const OPTION_CHECK = 'check';
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('list:publishers');
         $this->setDescription('List all known publishers');
         $this->addOption('check','c',InputOption::VALUE_NONE,'Optionally perform a check for each publisher to test if the source url is available and responds with a valid xml. Takes a while.');

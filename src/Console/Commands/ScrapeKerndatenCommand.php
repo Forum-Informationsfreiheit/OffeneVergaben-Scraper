@@ -27,7 +27,7 @@ class ScrapeKerndatenCommand extends Command
     /**
      *
      */
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('scrape:kerndaten');
         $this->setDescription('Collect kerndaten from known publishers.');
         $this->addArgument('publisher', InputArgument::OPTIONAL,"Alias or reference_id of publisher");

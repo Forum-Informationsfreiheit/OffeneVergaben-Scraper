@@ -26,7 +26,7 @@ class GetPublishersCommand extends AbstractCommand
      */
     protected $scraper;
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('scrape:publishers');
         $this->setDescription('Refresh the list of publishers (source: data.gv.at)');
     }

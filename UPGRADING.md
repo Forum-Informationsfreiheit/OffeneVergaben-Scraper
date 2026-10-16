@@ -11,7 +11,7 @@ The dependencies were from 2020 and declared PHP 7.1. On PHP 8.1 they printed de
 | Package | before | now |
 |---|---|---|
 | php | ^7.1.3 | ^8.1 (and `ext-pcntl`) |
-| symfony/console | ^4.4 | ^5.4 |
+| symfony/console | ^4.4 | ^6.4 |
 | monolog/monolog | ^1.25 | ^2.9 |
 | guzzlehttp/guzzle | ^6.5 | ^7.8 |
 | vlucas/phpdotenv | ^4.1 | ^5.6 |

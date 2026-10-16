@@ -16,7 +16,7 @@ class DisablePublisherCommand extends AbstractCommand
 {
     protected $disable = true;
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('disable:publisher');
         $this->setDescription('Disable a publisher, KDQs of disabled publishers will be skipped during scrape:kerndaten');
         $this->addArgument('publisher', InputArgument::REQUIRED,"Alias or reference_id of publisher");

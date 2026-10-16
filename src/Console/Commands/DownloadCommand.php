@@ -29,7 +29,7 @@ class DownloadCommand extends AbstractCommand
 
     protected $now;
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('download');
         $this->setDescription('Quick and dirty download-once of all available kerndaten xmls.');
     }
