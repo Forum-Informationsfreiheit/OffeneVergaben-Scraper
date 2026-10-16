@@ -7,9 +7,8 @@
     "guzzlehttp/guzzle": "^7.8",
     "nesbot/carbon": "^2.72",
     "vlucas/phpdotenv": "^5.6",
-    "illuminate/support": "^10.48"
-  },
-  "require-dev": {
+    "illuminate/support": "^10.48",
+    "sentry/sentry": "^4"
   },
   "config": {
     "platform": {

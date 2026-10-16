@@ -69,9 +69,10 @@ abstract class AbstractCommand extends Command
             $this->output->writeln('');
             $runtime = $start->diffInSeconds(Carbon::now());
             $this->info($this->getName() . ' finished in '.$runtime.' seconds');
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             // implement a default way of logging exceptions
             $this->app->getLogger()->error($this->getName() . ' Exception occurred.', [
+                'exception' => $ex,     // picked up by the Sentry handler, if configured
                 'file' => $ex->getFile(),
                 'line' => $ex->getLine(),
                 'code' => $ex->getCode(),
