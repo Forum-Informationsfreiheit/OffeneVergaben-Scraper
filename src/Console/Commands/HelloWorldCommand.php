@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class HelloWorldCommand extends AbstractCommand
 {
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('helloworld');
         $this->setDescription('Print Hello World to the console.');
     }

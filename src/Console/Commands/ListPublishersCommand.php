@@ -23,7 +23,7 @@ class ListPublishersCommand extends AbstractCommand
 
     const OPTION_CHECK = 'check';
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('list:publishers');
         $this->setDescription('List all known publishers');
         $this->addOption('check','c',InputOption::VALUE_NONE,'Optionally perform a check for each publisher to test if the source url is available and responds with a valid xml. Takes a while.');
@@ -72,9 +72,13 @@ class ListPublishersCommand extends AbstractCommand
             $row = [
                 ++$i,
                 text_shorten($p['name'],30),
+                $p['alias'],
                 $p['reference_id'],
                 Carbon::createFromTimeString($p['created_at'])->format('d.m.Y'),
-                $p['active'] ? 'enabled' : '<comment>disabled</comment>'
+                $p['active'] ? 'enabled' : '<comment>disabled</comment>',
+                preg_match('/_\d{3}$/', $p['alias'])
+                    ? '<comment>possible duplicate</comment>'
+                    : ''
             ];
 
             if ($this->input->getOption('check')) {
@@ -94,9 +98,11 @@ class ListPublishersCommand extends AbstractCommand
         $headers = [
             '#',
             'name',
+            'alias',
             'data.gv.at reference_id',
             'added',
-            'status'
+            'status',
+            'warning'
         ];
 
         if ($this->input->getOption('check')) {

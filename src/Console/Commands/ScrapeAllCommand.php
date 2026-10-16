@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ScrapeAllCommand extends AbstractCommand
 {
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('scrape:all');
         $this->setDescription('Executes scrape:publishers and scrape:kerndaten in consecutive order.');
     }

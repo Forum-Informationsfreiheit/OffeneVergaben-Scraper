@@ -25,7 +25,9 @@ class Application
         $this->console = new Console(self::NAME,self::VERSION);
 
         // load environment configuration settings
-        $env = Dotenv::createImmutable(BASE_PATH);
+        // "unsafe": also sets the values with putenv(), the database connection reads them with getenv().
+        // Immutable: existing environment variables win (see scripts/scraper in the devcontainer).
+        $env = Dotenv::createUnsafeImmutable(BASE_PATH);
         $env->load();
         $this->env = $env;
 

@@ -16,7 +16,7 @@ class EnablePublisherCommand extends DisablePublisherCommand
 {
     protected $disable = false;
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('enable:publisher');
         $this->setDescription('Enable a publisher, KDQs of enabled publishers will be scraped during scrape:kerndaten');
         $this->addArgument('publisher', InputArgument::REQUIRED,"Alias or reference_id of publisher");
