@@ -5,6 +5,7 @@ namespace OffeneVergaben\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use OffeneVergaben\Console\Exceptions\ScraperException;
+use OffeneVergaben\Console\DataGvAt;
 use OffeneVergaben\Console\Scraper;
 use OffeneVergaben\Models\DOM\Kdq;
 use \Symfony\Component\Console\Command\Command;
@@ -152,44 +153,20 @@ class DownloadCommand extends AbstractCommand
 
     protected function getPublishersFromDataGvAt() {
 
-        $tag = "Ausschreibung";
-        $params = [
-            'fq' => "tags:$tag",
-            'rows' => 20,
-            'start' => 0
-        ];
-
-        $base = "https://www.data.gv.at/katalog/api/3/action/package_search";
-        $total = 0;
-
-        $publishers = [];
+        $keyword = "ausschreibung";
 
         $this->info('Contacting data.gv.at ...');
 
-        while (true) {
-            $this->checkForInterrupts();
-            $url = $base . '?' . http_build_query($params);
-            $data = $this->fetchPublishersJson($url);
-            if (!isset($data->success) || !$data->success) {
-                $errorMessage = isset($data->error) && isset($data->error->message) ?
-                    $data->error->message : "";
-
-                $this->error("CKAN API call not successful ($errorMessage)");
-                break;
-            }
-            $packages = $data->result->results;
-            if (!count($packages)) {
-                break;
-            }
-            $total += count($packages);
-            $publishers = array_merge($publishers,$this->getPublishersFromPackages($packages));
-            if (count($packages) != $params['rows'] || $data->result->count == $total) {
-                break;
-            }
-            $params['start'] += count($packages);
+        try {
+            $packages = (new DataGvAt($this->scraper))->getPackagesByKeyword($keyword, function() {
+                $this->checkForInterrupts();
+            });
+        } catch(ScraperException $ex) {
+            $this->error('data.gv.at API call not successful: '.$ex->getMessage());
+            return [];
         }
 
-        return $publishers;
+        return $this->getPublishersFromPackages($packages);
     }
 
     protected function getPublishersFromPackages($packages) {
@@ -198,9 +175,9 @@ class DownloadCommand extends AbstractCommand
         foreach($packages as $package) {
             $this->checkForInterrupts();
 
-            $xmlResources = array_filter($package->resources,function($r) {
+            $xmlResources = array_values(array_filter($package->resources,function($r) {
                 return strtoupper($r->format) === 'XML';
-            });
+            }));
 
             if (count($xmlResources) === 0) {
                 continue;
@@ -219,25 +196,5 @@ class DownloadCommand extends AbstractCommand
         }
 
         return $publishers;
-    }
-
-    /**
-     * @param $uri
-     * @return null|String
-     */
-    protected function fetchPublishersJson($uri) {
-        try {
-            // try to get the json
-            $content = convert_to_utf8($this->scraper->getJson($uri));
-
-            $json = json_decode($content);
-
-            return $json;
-
-        } catch(ScraperException $ex) {
-            $this->error('Unable to fetch json: '.$ex->getMessage());
-        }
-
-        return null;
     }
 }

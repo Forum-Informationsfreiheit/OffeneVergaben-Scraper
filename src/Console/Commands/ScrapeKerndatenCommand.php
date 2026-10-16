@@ -10,6 +10,7 @@ use OffeneVergaben\Console\Scraper;
 use OffeneVergaben\Models\DOM\Kdq;
 use OffeneVergaben\Models\DOM\KdqItem;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class ScrapeKerndatenCommand extends Command
 {
@@ -30,6 +31,8 @@ class ScrapeKerndatenCommand extends Command
         $this->setName('scrape:kerndaten');
         $this->setDescription('Collect kerndaten from known publishers.');
         $this->addArgument('publisher', InputArgument::OPTIONAL,"Alias or reference_id of publisher");
+        $this->addOption('item', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            "Only scrape the kdq item(s) with this id, e.g. to fetch a single document for testing");
     }
 
     /**
@@ -92,6 +95,14 @@ class ScrapeKerndatenCommand extends Command
     protected function filterItems(Kdq $kdq) {
 
         $items = $kdq->getItems();
+
+        $onlyIds = $this->input->getOption('item');
+        if ($onlyIds) {
+            $items = array_filter($items, function($item) use ($onlyIds) {
+                return in_array($item->getId(), $onlyIds);
+            });
+        }
+
         $needsUpdate = [
             'items'   => [],
             'new'     => 0,

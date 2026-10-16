@@ -71,7 +71,7 @@ abstract class AbstractCommand extends Command
             $this->info($this->getName() . ' finished in '.$runtime.' seconds');
         } catch (\Exception $ex) {
             // implement a default way of logging exceptions
-            $this->app->getLogger()->addError($this->getName() . ' Exception occurred.', [
+            $this->app->getLogger()->error($this->getName() . ' Exception occurred.', [
                 'file' => $ex->getFile(),
                 'line' => $ex->getLine(),
                 'code' => $ex->getCode(),
@@ -106,7 +106,7 @@ abstract class AbstractCommand extends Command
         $prefix = $this->getName();
         $prefixedMessage = !Str::startsWith($message,$prefix) ? $prefix . ' ' . $message : $message;
 
-        $this->app->getLogger()->addInfo(strip_tags($prefixedMessage));
+        $this->app->getLogger()->info(strip_tags($prefixedMessage));
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class AbstractCommand extends Command
         $prefix = $this->getName();
         $prefixedMessage = !Str::startsWith($message,$prefix) ? $prefix . ' ' . $message : $message;
 
-        $this->app->getLogger()->addError(strip_tags($prefixedMessage));
+        $this->app->getLogger()->error(strip_tags($prefixedMessage));
     }
 
     /**

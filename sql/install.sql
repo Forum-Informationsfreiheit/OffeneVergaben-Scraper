@@ -24,7 +24,7 @@ CREATE TABLE `vergaben_scraper`.`kerndaten` (
   `item_id` varchar(80) DEFAULT NULL,
   `item_url` varchar(500) DEFAULT NULL,
   `item_lastmod` timestamp(6) NULL DEFAULT NULL,
-  `xml` text NOT NULL,
+  `xml` mediumtext NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `kerndaten_quelle_item_id` (`quelle`,`item_id`),

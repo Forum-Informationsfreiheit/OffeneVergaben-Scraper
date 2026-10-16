@@ -205,7 +205,7 @@ class Scraper
             return $this->lastResponse;
 
         } catch (RequestException $ex) {
-            app()->getLogger()->addError('Scraper RequestException occurred', [
+            app()->getLogger()->error('Scraper RequestException occurred', [
                 'uri'  => $method . ' ' .$uri,
                 'message' => $ex->getMessage(),
                 'file' => $ex->getFile(),
