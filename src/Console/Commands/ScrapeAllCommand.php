@@ -8,6 +8,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -22,6 +23,7 @@ class ScrapeAllCommand extends AbstractCommand
     protected function configure(): void {
         $this->setName('scrape:all');
         $this->setDescription('Executes scrape:publishers and scrape:kerndaten in consecutive order.');
+        $this->addOption('fast', null, InputOption::VALUE_NONE, 'Use a shorter interval between kerndaten requests');
     }
 
     protected function exe() {
@@ -56,6 +58,10 @@ class ScrapeAllCommand extends AbstractCommand
         $arguments = [
             'command' => 'scrape:kerndaten',
         ];
+
+        if ($this->input->getOption('fast')) {
+            $arguments['--fast'] = true;
+        }
 
         return $command->run(new ArrayInput($arguments), $this->output);
     }

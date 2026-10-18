@@ -14,6 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 class ScrapeKerndatenCommand extends Command
 {
+    const FAST_INTERVAL = 500;
+
     /**
      * @var Database\MysqlConnection $db
      */
@@ -33,6 +35,8 @@ class ScrapeKerndatenCommand extends Command
         $this->addArgument('publisher', InputArgument::OPTIONAL,"Alias or reference_id of publisher");
         $this->addOption('item', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             "Only scrape the kdq item(s) with this id, e.g. to fetch a single document for testing");
+        $this->addOption('fast', null, InputOption::VALUE_NONE,
+            "Use a shorter interval between requests (" . self::FAST_INTERVAL . "ms instead of the default)");
     }
 
     /**
@@ -42,7 +46,9 @@ class ScrapeKerndatenCommand extends Command
         $this->db = $this->app->getDatabase();
         $this->db->connect();
 
-        $this->scraper = new Scraper();
+        $this->scraper = $this->input->getOption('fast')
+            ? new Scraper(null, ['interval' => self::FAST_INTERVAL])
+            : new Scraper();
 
         $this->selfHandleInterrupts();
     }
@@ -109,9 +115,12 @@ class ScrapeKerndatenCommand extends Command
             'updated' => 0,
         ];
 
+        // one query for the latest stored version of every item in this quelle
+        $storedByItem = $this->getLastKerndatenByItem($kdq->getQuelle());
+
         // loop over each item in kdq and check it against the database
         foreach($items as $item) {
-            $stored = $this->getLastKerndaten($kdq->getQuelle(), $item->getId());
+            $stored = $storedByItem[$item->getId()] ?? null;
 
             if (!$stored) {
                 $item->setData('last_version',0);
@@ -177,6 +186,25 @@ class ScrapeKerndatenCommand extends Command
         $this->db->insert(
             "INSERT INTO kerndaten (". join(',',array_keys($data)) .") VALUES (". str_repeat('?,', count($data) - 1) . '?' .")",
             array_values($data));
+    }
+
+    /**
+     * Latest version (without the xml payload) of each item, keyed by item_id.
+     */
+    protected function getLastKerndatenByItem($quellenAlias) {
+        $rows = $this->db->get(
+            "SELECT k.item_id, k.version, k.item_lastmod FROM kerndaten k
+             JOIN (SELECT item_id, MAX(version) AS version FROM kerndaten WHERE quelle = ? GROUP BY item_id) m
+               ON m.item_id = k.item_id AND m.version = k.version
+             WHERE k.quelle = ?",
+            [$quellenAlias, $quellenAlias]);
+
+        $byItem = [];
+        foreach ($rows as $row) {
+            $byItem[$row['item_id']] = $row;
+        }
+
+        return $byItem;
     }
 
     protected function getLastKerndaten($quellenAlias, $itemId) {
