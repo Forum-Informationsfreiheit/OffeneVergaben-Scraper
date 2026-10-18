@@ -137,7 +137,11 @@ class Scraper
 
         // check content type header
         $ctHeaderString = join(';', $response->getHeader('Content-Type'));
-        if (strpos($ctHeaderString, 'application/xml') === FALSE
+        // some servers (e.g. pub.ista.ac.at) send no Content-Type at all for
+        // extensionless files; accept those if the body itself looks like xml.
+        $missingCt = trim($ctHeaderString) === '' && strncmp(ltrim($body, "\xEF\xBB\xBF \t\r\n"), '<', 1) === 0;
+        if (!$missingCt
+            && strpos($ctHeaderString, 'application/xml') === FALSE
             && strpos($ctHeaderString, 'text/xml') === FALSE) {
             throw new ScraperException("Wrong Content-Type received: " . $ctHeaderString);
         }
