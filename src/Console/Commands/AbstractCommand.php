@@ -114,8 +114,9 @@ abstract class AbstractCommand extends Command
      * Write a error message to the console and to the log file.
      *
      * @param string $message
+     * @param array $context - extra data (e.g. url, publisher) attached to the log record / Sentry event
      */
-    protected function error($message) {
+    protected function error($message, array $context = []) {
         // write original message to output interface
         $this->output->writeln('<error>' . $message . '</error>');
 
@@ -123,7 +124,7 @@ abstract class AbstractCommand extends Command
         $prefix = $this->getName();
         $prefixedMessage = !Str::startsWith($message,$prefix) ? $prefix . ' ' . $message : $message;
 
-        $this->app->getLogger()->error(strip_tags($prefixedMessage));
+        $this->app->getLogger()->error(strip_tags($prefixedMessage), $context);
     }
 
     /**

@@ -102,11 +102,11 @@ class Scraper
         $response = $this->request('GET', $uri);
 
         if (!$response) {
-            throw new ScraperException("No response received.");
+            throw new ScraperException("No response received from $uri.");
         }
 
         if ($response->getStatusCode() !== 200) {
-            throw new ScraperException("Address not available. Status Code " . $response->getStatusCode());
+            throw new ScraperException("Address not available. Status Code " . $response->getStatusCode() . " for " . $uri);
         }
 
         return $response;

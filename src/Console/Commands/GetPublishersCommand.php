@@ -80,7 +80,7 @@ class GetPublishersCommand extends AbstractCommand
             // usually there will be 1 resource for 1 publisher
             // but the data structure allows for n resources per publisher, log that as an error
             if (count($xmlResources) > 1) {
-                $this->error('Multiple XML resources found for publisher '.$package->publisher . ' proceeding with resource '.$xmlResources[0]->id . '. Other resources are ignored.');
+                $this->error('Multiple XML resources found for publisher '.$package->publisher . ' proceeding with resource '.$xmlResources[0]->id . '. Other resources are ignored.', ['package' => $package->id ?? null, 'resources' => array_column((array) $xmlResources, 'url')]);
             }
 
             // in any case continue with the first one

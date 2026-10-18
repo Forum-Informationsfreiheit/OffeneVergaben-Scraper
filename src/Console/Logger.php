@@ -29,7 +29,9 @@ class Logger {
         $this->logger->pushHandler(new StreamHandler($filePath, MonologLogger::DEBUG));
 
         // Report errors to Sentry / Bugsink. An 'exception' in the log context is sent as exception with stack trace.
+        // Info logs ('GET <url>' etc.) become breadcrumbs, so an error event shows the preceding steps.
         if (\Sentry\SentrySdk::getCurrentHub()->getClient() !== null) {
+            $this->logger->pushHandler(new \Sentry\Monolog\BreadcrumbHandler(\Sentry\SentrySdk::getCurrentHub(), MonologLogger::INFO));
             $this->logger->pushHandler(new \Sentry\Monolog\Handler(\Sentry\SentrySdk::getCurrentHub(), MonologLogger::ERROR));
         }
     }

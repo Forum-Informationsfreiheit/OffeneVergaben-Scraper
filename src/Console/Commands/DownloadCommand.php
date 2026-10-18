@@ -89,7 +89,7 @@ class DownloadCommand extends AbstractCommand
         try {
             return $this->scraper->getXml($publisher['url']);
         } catch(ScraperException $ex) {
-            $this->error("Unable to get KDQ from publisher ".$publisher['name']);
+            $this->error("Unable to get KDQ from publisher ".$publisher['name'].' ('.$publisher['url'].'): '.$ex->getMessage(), ['url' => $publisher['url']]);
             return null;
         }
     }
@@ -102,7 +102,7 @@ class DownloadCommand extends AbstractCommand
         try {
             return $this->scraper->getXml($item->getUrl());
         } catch(ScraperException $ex) {
-            $this->error("Unable to get Kerndaten XML ".$item->getId());
+            $this->error("Unable to get Kerndaten XML ".$item->getId().' ('.$item->getUrl().'): '.$ex->getMessage(), ['url' => $item->getUrl()]);
             return null;
         }
     }
@@ -162,7 +162,7 @@ class DownloadCommand extends AbstractCommand
                 $this->checkForInterrupts();
             });
         } catch(ScraperException $ex) {
-            $this->error('data.gv.at API call not successful: '.$ex->getMessage());
+            $this->error('data.gv.at API call not successful: '.$ex->getMessage(), ['keyword' => $keyword]);
             return [];
         }
 
@@ -183,7 +183,7 @@ class DownloadCommand extends AbstractCommand
                 continue;
             }
             if (count($xmlResources) > 1) {
-                $this->error('Multiple XML resources found for publisher '.$package->publisher . ' proceeding with resource '.$xmlResources[0]->id . '. Other resources are ignored.');
+                $this->error('Multiple XML resources found for publisher '.$package->publisher . ' proceeding with resource '.$xmlResources[0]->id . '. Other resources are ignored.', ['package' => $package->id ?? null, 'resources' => array_column((array) $xmlResources, 'url')]);
             }
 
             $resource = $xmlResources[0];

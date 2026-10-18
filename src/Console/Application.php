@@ -38,6 +38,7 @@ class Application
                 'environment' => getenv('SENTRY_ENVIRONMENT') ?: null,
                 'release' => getenv('SENTRY_RELEASE') ?: null,
                 'send_default_pii' => false,
+                'max_breadcrumbs' => 50,
             ]);
         }
 

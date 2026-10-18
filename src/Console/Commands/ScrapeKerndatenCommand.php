@@ -162,7 +162,7 @@ class ScrapeKerndatenCommand extends Command
             return $content;
 
         } catch(ScraperException $ex) {
-            $this->error('Unable to fetch xml: '.$ex->getMessage());
+            $this->error('Unable to fetch xml: '.$ex->getMessage(), ['url' => $uri]);
         }
 
         return null;
