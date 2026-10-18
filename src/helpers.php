@@ -56,7 +56,22 @@ if (!function_exists('convert_to_utf8')) {
 
         $from = detect_utf_encoding_from_bom($data);
 
-        if (!$from || $from === 'UTF-8') {
+        if (!$from) {
+            // no BOM: use the encoding declared in the xml prolog, if any,
+            // otherwise fall back to Windows-1252 when the data is not valid utf-8
+            if (preg_match('/^\s*<\?xml[^>]*encoding\s*=\s*["\']([^"\']+)["\']/i', $data, $m)) {
+                $declared = strtoupper($m[1]);
+                if ($declared !== 'UTF-8' && $declared !== 'UTF8') {
+                    $from = $declared;
+                }
+            }
+            if (!$from) {
+                if (preg_match('//u', $data)) {
+                    return $data;
+                }
+                $from = 'WINDOWS-1252';
+            }
+        } elseif ($from === 'UTF-8') {
             return $data;
         }
 
@@ -72,6 +87,9 @@ if (!function_exists('convert_to_utf8')) {
         if ($out === false) {
             throw new Exception('Unsupported encoding %s. Please install iconv or mbstring for PHP.');
         }
+
+        // the data is utf-8 now, make sure a declared encoding does not say otherwise
+        $out = preg_replace('/^(\s*<\?xml[^>]*encoding\s*=\s*["\'])[^"\']+(["\'])/i', '$1UTF-8$2', $out, 1);
 
         return $out;
     }
