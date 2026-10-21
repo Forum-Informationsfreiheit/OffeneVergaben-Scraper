@@ -4,6 +4,7 @@ namespace OffeneVergaben\Console;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Str;
@@ -210,7 +211,7 @@ class Scraper
 
             return $this->lastResponse;
 
-        } catch (RequestException $ex) {
+        } catch (RequestException | ConnectException $ex) {
             app()->getLogger()->error('Scraper RequestException occurred', [
                 'uri'  => $method . ' ' .$uri,
                 'message' => $ex->getMessage(),
@@ -225,7 +226,8 @@ class Scraper
             // should implement re-try functionality, to re-try x number of times before giving up.
 
 
-            return $ex->getResponse();
+            // ConnectException (unknown host, refused, timeout) has no response, get() turns null into a ScraperException
+            return $ex instanceof RequestException ? $ex->getResponse() : null;
 
         } finally {
             if ($this->options['log_requests']) {

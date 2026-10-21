@@ -19,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListPublishersCommand extends AbstractCommand
 {
+    protected $db;
+
     protected $scraper;
 
     const OPTION_CHECK = 'check';

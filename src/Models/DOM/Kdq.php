@@ -14,9 +14,9 @@ use DOMDocument;
 class Kdq
 {
     /**
-     * @var string $providerId
+     * @var string $quelle
      */
-    protected $providerId;
+    protected $quelle;
 
     /**
      * @var DOMDocument $document
@@ -126,7 +126,7 @@ class KdqItem {
         $id  = $item->hasAttribute('id') ?
             $item->getAttribute('id') : null;
         $url = $item->getElementsByTagName('url')->length ?
-            $item->getElementsByTagName('url')->item(0)->nodeValue : null;
+            trim($item->getElementsByTagName('url')->item(0)->nodeValue) : null;
         $lastMod = $item->hasAttribute('lastmod') ?
             Carbon::createFromTimeString($item->getAttribute('lastmod')) : null;
 

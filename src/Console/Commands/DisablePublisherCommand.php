@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DisablePublisherCommand extends AbstractCommand
 {
+    protected $db;
+
     protected $disable = true;
 
     protected function configure(): void {

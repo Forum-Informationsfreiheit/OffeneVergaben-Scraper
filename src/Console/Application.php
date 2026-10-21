@@ -20,6 +20,12 @@ class Application
 
     protected $env;
 
+    /** @var Logger */
+    protected $logger;
+
+    /** @var ConnectionInterface */
+    protected $database;
+
     private function __construct() {
         // Create the Console
         $this->console = new Console(self::NAME,self::VERSION);
