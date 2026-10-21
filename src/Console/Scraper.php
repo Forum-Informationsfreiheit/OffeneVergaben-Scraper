@@ -244,7 +244,7 @@ class Scraper
             $threshold = $this->lastRequestAt->copy()->addMilliSeconds($this->options['interval']);
 
             if ($threshold->greaterThan(Carbon::now())) {
-                $diff = Carbon::now()->diffInMicroseconds($threshold);
+                $diff = (int) Carbon::now()->diffInMicroseconds($threshold);
                 usleep($diff);
             }
         }

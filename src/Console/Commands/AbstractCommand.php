@@ -67,7 +67,7 @@ abstract class AbstractCommand extends Command
             $this->exe();
 
             $this->output->writeln('');
-            $runtime = $start->diffInSeconds(Carbon::now());
+            $runtime = (int) $start->diffInSeconds(Carbon::now());
             $this->info($this->getName() . ' finished in '.$runtime.' seconds');
         } catch (\Throwable $ex) {
             // implement a default way of logging exceptions

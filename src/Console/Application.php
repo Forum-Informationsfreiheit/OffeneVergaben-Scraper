@@ -99,7 +99,7 @@ class Application
      * @param \Symfony\Component\Console\Command\Command $command
      */
     public function addCommand($command) {
-        $this->console->add($command);
+        $this->console->addCommand($command);
     }
 
     /**
